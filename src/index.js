@@ -29,7 +29,7 @@ const startServer = async() => {
     process.exit(1);
   }
 
-  const port = process.env.NODE_PORT || 50000;
+  const port = process.env.PORT || 50000;
   app.listen(port, () => {
     console.log(`Running application in ${process.env.NODE_ENV} environment`);
     console.log(`Listening at http://localhost:${port}`);
