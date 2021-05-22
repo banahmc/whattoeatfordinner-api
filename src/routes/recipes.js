@@ -16,10 +16,25 @@ module.exports = function(app) {
   // Get random recipe from database
   app.get('/api/recipes/random', async(req, res, next) => {
     try {
-      const numItems = await RecipeModel.estimatedDocumentCount();
-      const rand = Math.floor(Math.random() * numItems);
-      const recipe = await RecipeModel.findOne().skip(rand);
-      res.json(recipe);
+      const { term } = req.query;
+      if (term && term.length >= 1) {
+        let regExp = '';
+        if (Array.isArray(term)) {
+          regExp = term.reduce((prev, curr) => `${prev}(?=.*\\b${curr}\\b)`, '');
+        } else {
+          regExp = `(?=.*\\b${term}\\b)`;
+        }
+        const filterQuery = { title: { $regex: `^${regExp}.+`, $options: 'gi' } };
+        const docCount = await RecipeModel.countDocuments(filterQuery);
+        const rand = Math.floor(Math.random() * docCount);
+        const recipes = await RecipeModel.find(filterQuery, null, { skip: rand, limit: 1 });
+        res.json(recipes);
+      } else {
+        const docCount = await RecipeModel.estimatedDocumentCount();
+        const rand = Math.floor(Math.random() * docCount);
+        const recipe = await RecipeModel.findOne().skip(rand);
+        res.json(recipe);
+      }
     } catch (error) {
       next(error);
     }
