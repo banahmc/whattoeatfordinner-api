@@ -22,7 +22,6 @@ const startServer = async() => {
       useUnifiedTopology: true,
     };
     await mongoose.connect(mongoDbUri, mongoDbConnectionOptions);
-
     console.info(`Connected to database on Worker process: ${process.pid}`);
   } catch (error) {
     console.error(`Database connection error: ${error.stack} on Worker process: ${process.pid}`);
