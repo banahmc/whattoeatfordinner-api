@@ -27,7 +27,7 @@ module.exports = function(app) {
         const filterQuery = { title: { $regex: `^${regExp}.+`, $options: 'gi' } };
         const docCount = await RecipeModel.countDocuments(filterQuery);
         const rand = Math.floor(Math.random() * docCount);
-        const recipe = (await RecipeModel.find(filterQuery, null, { skip: rand, limit: 1 })[0]);
+        const recipe = (await RecipeModel.find(filterQuery, null, { skip: rand, limit: 1 }))[0];
         res.json(recipe);
       } else {
         const docCount = await RecipeModel.estimatedDocumentCount();
